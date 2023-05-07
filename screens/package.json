@@ -1,10 +1,8 @@
 {
-    "name": "@screens/direct-messages",
-    "version": "1.0.0",
-    "description": "",
-    "private": true,
-    "main": "index.js",
-    "files": ["*"],
-    "author": "Crowdbotics",
-    "license": "ISC"
+  "name": "@modules/articles",
+  "version": "1.0.0",
+  "description": "Module for articles lists and details pages.",
+  "private": true,
+  "main": "index.js",
+  "author": "Crowdbotics"
 }
