@@ -1,404 +1,306 @@
-import React from "react";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TextInput,
+  FlatList,
+  Image,
+  Pressable
+} from "react-native";
 
-const walletHomeScreen = () => {
+const ChatListingScreen = params => {
+  const [username, setUsername] = useState("");
+  const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        name: "Cody Fisher",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 1,
+        isOnline: true,
+        lastTime: "15 min"
+      },
+      {
+        id: 2,
+        name: "Jenny Wilson",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 2,
+        isOnline: true,
+        lastTime: "1 hour"
+      },
+      {
+        id: 3,
+        name: "Johnny Watson",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 0,
+        isOnline: true,
+        lastTime: "2 hours"
+      },
+      {
+        id: 4,
+        name: "Ralph Williams",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 0,
+        isOnline: false,
+        lastTime: "3 hours"
+      },
+      {
+        id: 5,
+        name: "Guy Hawkins",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 0,
+        isOnline: false,
+        lastTime: "Mon"
+      },
+      {
+        id: 6,
+        name: "Morris Henery",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 0,
+        isOnline: false,
+        lastTime: "Tue"
+      },
+      {
+        id: 7,
+        name: "Irma Flores",
+        message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        profileImage: require("./assets/profile.png"),
+        unread: 0,
+        isOnline: false,
+        lastTime: "Wed"
+      }
+    ]);
+  }, []);
   return (
     <View style={styles.container}>
-      <ScrollView>
       <View style={styles.header}>
-        <View style={styles.headerIcons}>
-            <Image source={require(
-              // @ts-ignore
-              "./assets/back.png")} />
-             <Image source={require(
-               // @ts-ignore
-               "./assets/bell.png")} />
-        </View>
-        <View>
-          <Text style={styles.availText}>Available</Text>
-          <Text style={styles.coinsText}>Coins/Cash</Text>
-        </View>
-        <View style={styles.amounts}>
-          <Text style={styles.getAmount}>$1,893.90 <Text style={styles.totalAmount}>/ $5,250.35</Text></Text>
-        </View>
-        <View style={styles.slider}>
-          <Image style={styles.sliderImg} source={require(
-            // @ts-ignore
-            "./assets/slider.png")} />
-        </View>
-        <View style={styles.tabSection}>
-            <View>
-              <Text style={styles.heading}>Coin</Text>
-              <Text style={styles.subHeading}>$232.99</Text>
-            </View>
-            <View style={styles.border}></View>
-            <View>
-              <Text style={styles.heading}>Cash</Text>
-              <Text style={styles.subHeading}>$432.90</Text>
-            </View>
-            <View style={styles.border}></View>
-            <View>
-              <Text style={styles.heading}>Staked Coins</Text>
-              <Text style={styles.subHeading}>$150.00</Text>
-            </View>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>Search</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={text => setUsername(text)}
+            value={username}
+            placeholder="Search Username"
+            placeholderTextColor="#9B9B9B"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <Image
+            source={require("./assets/searchIcon.png")}
+            style={styles.searchIcon}
+          />
         </View>
       </View>
-      <View style={styles.tabView}>
-        <View style={styles.tabItem}>
-          <Text style={styles.tabText}>Exchange</Text>
-        </View>
-        <View style={styles.tabItem}>
-          <Text style={styles.tabText}>Pay</Text>
-        </View>
-        <View style={styles.tabItem}>
-          <Text style={styles.tabText}>Deposit</Text>
-        </View>
+      <TabView tabTitles={["Select all", "Delete selected"]} selected={0} />
+      <FlatList
+        data={messages}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => <ChatListingItem message={item} />}
+      />
+      <View style={styles.newBtn}>
+        <Pressable>
+          <Image source={require("./assets/plusIcon.png")} />
+        </Pressable>
       </View>
-      <View style={styles.walletHeadings}>
-            <Text style={styles.mainHeading}>List of wallets</Text>
-            <Text style={styles.mainHeading}>Balance</Text>
-      </View>
-      <View style={styles.mainContainer}>
-        <View style={styles.innerView}>
-            <View style={styles.innerHalfView}>
-              <Image style={styles.sliderImg} source={require(
-                // @ts-ignore
-                "./assets/ethereum.png")} />
-            <View>
-              <Text style={styles.coinText}>Ethereum</Text>
-              <Text style={styles.coinSubText}>ETH</Text>
-            </View>
-          </View>
-          <View>
-            <Text style={styles.balanceText}>$1.893,04</Text>
-            <Text style={styles.balanceAmountTextPositive}>+%11.89</Text>
-          </View>
-        </View>
-        <View style={styles.borderWhite}></View>
-
-        <View style={styles.innerView}>
-            <View style={styles.innerHalfView}>
-              <Image style={styles.sliderImg} source={require(
-                // @ts-ignore
-                "./assets/bitcoin.png")} />
-            <View>
-              <Text style={styles.coinText}>Bitcoin</Text>
-              <Text style={styles.coinSubText}>BTC</Text>
-            </View>
-          </View>
-          <View>
-            <Text style={styles.balanceText}>$37.818,60</Text>
-            <Text style={styles.balanceAmountTextNegative}>-%9.89</Text>
-          </View>
-        </View>
-        <View style={styles.borderWhite}></View>
-
-        <View style={styles.innerView}>
-            <View style={styles.innerHalfView}>
-              <Image style={styles.sliderImg} source={require(
-                // @ts-ignore
-                "./assets/ripple.png")} />
-            <View>
-              <Text style={styles.coinText}>Ripple</Text>
-              <Text style={styles.coinSubText}>XRP</Text>
-            </View>
-          </View>
-          <View>
-            <Text style={styles.balanceText}>$142,12</Text>
-            <Text style={styles.balanceAmountTextPositive}>+%1.89</Text>
-          </View>
-        </View>
-      </View>
-        <View style={styles.walletAreaSection}>
-            <Text style={styles.mainHeading}>Currency chat</Text>
-            <Image style={styles.sliderImg} source={require(
-              // @ts-ignore
-              "./assets/dropdown.png")} />
-        </View>
-        <View style={styles.imageGraph}>
-          <Image style={styles.graphImg} source={require(
-            // @ts-ignore
-            "./assets/card.png")} />
-        </View>
-
-        <View style={styles.indicatorsSection}>
-            <View style={styles.innerIndicator}>
-              <View style={styles.blueCircle}></View>
-              <Text style={styles.subHeadingTwo}>Ethereum</Text>
-            </View>
-            <View style={styles.border}></View>
-            <View style={styles.innerIndicator}>
-              <Text style={styles.greenCircle}></Text>
-              <Text style={styles.subHeadingTwo}>Bitcoin</Text>
-            </View>
-            <View style={styles.border}></View>
-            <View style={styles.innerIndicator}>
-              <Text style={styles.redCircle}></Text>
-              <Text style={styles.subHeadingTwo}>Ripple</Text>
-            </View>
-        </View>
-      <View style={styles.tabParent}>
-        <View style={styles.tabViewTwo}>
-          <View style={styles.tabItem}>
-            <Text style={styles.tabText}>Buy</Text>
-          </View>
-          <View style={styles.tabItem}>
-            <Text style={styles.tabText}>Sell</Text>
-          </View>
-          <View style={styles.tabItem}>
-            <Text style={styles.tabText}>Swap</Text>
-          </View>
-          <View style={styles.tabItem}>
-            <Text style={styles.tabText}>History</Text>
-          </View>
-        </View>
-      </View>
-      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-
   container: {
-    backgroundColor: "white",
-    display: "flex",
-    paddingVertical: 20,
-    height: "100%"
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "flex-start"
   },
   header: {
-    height: 237,
-    backgroundColor: "#F1F1F1",
-    paddingHorizontal: 25,
-    paddingVertical: 25
+    padding: 20,
+    // flex: 1,
+    height: 100
   },
-  headerIcons: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between"
-  },
-  availText: {
-    fontSize: 14,
-    color: "#111112",
-    marginTop: 15
-  },
-  coinsText: {
-    fontSize: 11,
-    color: "#7C7C7C"
-  },
-  getAmount: {
-    fontSize: 26,
-    color: "#12D790",
-    fontWeight: "500"
-  },
-  totalAmount: {
-    fontSize: 12,
-    color: "#000000",
-    fontWeight: "500"
-  },
-  amounts: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10
-  },
-  slider: {
-    marginTop: 14
-  },
-  sliderImg: {
-    borderRadius: 5
-  },
-  tabSection: {
-    height: 77,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
-    marginTop: 24,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    paddingHorizontal: 10
-  },
-  heading: {
-    fontSize: 14,
-    color: "#26292A",
-    fontWeight: "500",
-    textAlign: "center"
-  },
-  subHeading: {
-    fontSize: 16,
-    color: "#12D790",
-    fontWeight: "500",
-    textAlign: "center"
-  },
-  subHeadingTwo: {
-    fontSize: 14,
-    color: "#26292A",
-    fontWeight: "500",
-    marginLeft: 10
-  },
-  border: {
-    borderWidth: 1,
-    height: 49,
-    borderColor: "#F2F2F2"
-  },
-  tabView: {
-    height: 48,
-    backgroundColor: "#F1F1F1",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    alignSelf: "center",
-    borderRadius: 10,
-    width: 282,
-    marginTop: 40
-  },
-  tabViewTwo: {
-    height: 48,
-    backgroundColor: "#F1F1F1",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    borderRadius: 10,
-    width: "100%",
-    marginTop: 40
-  },
-  tabItem: {
-    height: 37,
+  inputContainer: {
+    flexDirection: "column",
+    flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    backgroundColor: "#FFF",
-    shadowColor: "gray",
-    elevation: 10,
-    borderRadius: 10,
-    color: "#000",
-    width: 81,
-    marginHorizontal: 10
+    marginHorizontal: 5
   },
-  tabText: {
-    fontSize: 12,
-    color: "#7C7C7C",
-    textAlign: "center"
-  },
-  walletHeadings: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 32,
-    paddingTop: 40
-  },
-  walletAreaSection: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 32,
-    paddingTop: 40
-  },
-  mainHeading: {
+  inputText: {
     fontSize: 16,
-    color: "#000000"
+    marginLeft: 20,
+    color: "#111112"
   },
-  mainContainer: {
-    height: 266,
-    backgroundColor: "#F1F1F1",
+  input: {
+    borderWidth: 1,
+    borderColor: "#e6e6e6",
     borderRadius: 10,
-    marginHorizontal: 15,
-    marginTop: 20
+    padding: 10,
+    paddingLeft: 20,
+    marginVertical: 10,
+    width: "100%",
+    height: 50
   },
-  innerView: {
-    display: "flex",
+  searchIcon: {
+    position: "absolute",
+    right: 30,
+    top: 35
+  },
+  newBtn: {
+    position: "absolute",
+    backgroundColor: "black",
+    bottom: 30,
+    right: 30,
+    padding: 20,
+    borderRadius: 50,
+    elevation: 10,
+    shadowColor: "grey"
+  }
+});
+export default ChatListingScreen;
+
+const ChatListingItem = ({ message }) => {
+  return (
+    <View style={chatListingItemStyles.chatListingItem}>
+      <Image
+        source={message.profileImage}
+        style={chatListingItemStyles.profileImage}
+      />
+      {(message.isOnline && (
+        <Image
+          source={require("./assets/onlineIcon.png")}
+          style={chatListingItemStyles.activityDot}
+        />
+      )) ||
+        null}
+      <View style={chatListingItemStyles.chatListingItemInfo}>
+        <Text style={chatListingItemStyles.username}>{message.name}</Text>
+        <Text style={chatListingItemStyles.message}>{message.message}</Text>
+      </View>
+      <View style={chatListingItemStyles.chatListingItemTime}>
+        <Text style={chatListingItemStyles.time}>{message.lastTime}</Text>
+        {(message.unread > 0 && (
+          <View style={chatListingItemStyles.unread}>
+            <Text
+              style={{
+                color: "#fff"
+              }}>
+              {message.unread}
+            </Text>
+          </View>
+        )) ||
+          null}
+      </View>
+    </View>
+  );
+};
+
+const chatListingItemStyles = StyleSheet.create({
+  chatListingItem: {
     flexDirection: "row",
+    alignItems: "center",
+    borderColor: "#e6e6e6",
+    borderBottomWidth: 1,
+    marginHorizontal: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    height: 100
+  },
+  profileImage: {
+    width: 70,
+    height: 70
+  },
+  activityDot: {
+    position: "absolute",
+    left: 65,
+    bottom: 20
+  },
+  chatListingItemInfo: {
+    flex: 1,
+    marginHorizontal: 15
+  },
+  username: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#111112"
+  },
+  message: {
+    fontSize: 14,
+    color: "grey"
+  },
+  chatListingItemTime: {
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 18
+    height: 60
   },
-  innerHalfView: {
-    flexDirection: "row",
-    alignItems: "center"
-  },
-  coinText: {
+  time: {
     fontSize: 14,
-    color: "#000000",
-    marginLeft: 20,
-    marginBottom: 10
+    color: "grey",
+    fontWeight: "bold"
   },
-  coinSubText: {
-    fontSize: 12,
-    color: "#ADB1B2",
-    marginLeft: 20
-  },
-  balanceText: {
-    fontSize: 18,
-    color: "#26292A",
-    marginBottom: 10
-  },
-  balanceAmountTextPositive: {
-    fontSize: 12,
-    color: "#12D790",
-    textAlign: "right"
-  },
-  balanceAmountTextNegative: {
-    fontSize: 12,
-    color: "#EA4335",
-    textAlign: "right"
-  },
-  borderWhite: {
-    height: 1,
-    marginHorizontal: 25,
-    borderWidth: 1,
-    borderColor: "#FFFFFF"
-  },
-  imageGraph: {
-    marginHorizontal: 15,
-    height: 226
-  },
-  graphImg: {
-    resizeMode: "contain",
-    width: "100%",
-    height: 226
-  },
-  indicatorsSection: {
-    display: "flex",
-    flexDirection: "row",
+  unread: {
+    fontSize: 14,
+    backgroundColor: "black",
+    width: 30,
+    height: 30,
+    color: "#fff",
     alignItems: "center",
-    height: 68,
-    justifyContent: "space-around",
-    paddingHorizontal: 10,
-    marginTop: -30
-  },
-  blueCircle: {
-    width: 12,
-    height: 12,
-    backgroundColor: "#3443CF",
-    borderRadius: 100 / 2,
-    marginTop: 4
-  },
-  greenCircle: {
-    width: 12,
-    height: 12,
-    backgroundColor: "#41C174",
-    borderRadius: 100 / 2,
-    marginTop: 4
-  },
-  redCircle: {
-    width: 12,
-    height: 12,
-    backgroundColor: "#F81506",
-    borderRadius: 100 / 2,
-    marginTop: 4
-  },
-  innerIndicator: {
-    flexDirection: "row"
-  },
-  tabParent: {
-    paddingHorizontal: 10,
-    marginTop: -30,
-    marginBottom: 10
+    justifyContent: "center",
+    borderRadius: 9
   }
 });
 
-export default walletHomeScreen;
+const TabView = ({ tabTitles, selected }) => {
+  return (
+    <View style={tabViewStyles.paletteContainer}>
+      {tabTitles.map((title, index) => (
+        <View
+          style={
+            index === selected
+              ? tabViewStyles.selected
+              : tabViewStyles.unSelected
+          }
+          key={index}>
+          <Text>{title}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+
+const tabViewStyles = StyleSheet.create({
+  paletteContainer: {
+    width: "70%",
+    height: 48,
+    backgroundColor: "#F1F1F1",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 6,
+    marginVertical: 10,
+    marginHorizontal: 20
+  },
+  selected: {
+    borderRadius: 10,
+    flex: 1,
+    backgroundColor: "#fff",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "gray",
+    elevation: 10
+  },
+  unSelected: {
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F1F1F1",
+    borderRadius: 10
+  }
+});
