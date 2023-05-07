@@ -3,321 +3,249 @@ import {
   Text,
   View,
   StyleSheet,
+  Modal,
+  Pressable,
   Image,
-  ScrollView,
   TextInput,
-  Pressable
+  FlatList
 } from "react-native";
 
-const ArticleDetails = () => {
-  const [comment, setComment] = useState("");
-  const [article, setArticle] = useState({});
-  const [comments, setComments] = useState([]);
+const ARDevices = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [search, setSearch] = useState("");
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedDevice, setSelectedDevice] = useState(null);
+  const [devices, setDevices] = useState([]);
   useEffect(() => {
-    setArticle({
-      title: "Article name",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Massa faucibus nisi egestas quis etiam nec feugiat. Scelerisque pellentesque at in accumsan cras tristique at id. At nullam lectus sapien nulla. At egestas cursus elit, tortor mattis gravida ornare proin ipsum. Duis purus turpis libero tristique dignissim.",
-      authorName: "Author name",
-      authorImage: require("./assets/authorImage.png"),
-      image: require("./assets/articleImage.png"),
-      date: "Jul 04",
-      readTime: "15 min read",
-      commentsCount: "1.2k"
-    });
-    setComments([
-      {
-        user: {
-          name: "Username",
-          image: require("./assets/userImage.png")
-        },
-        comment: "Dueotep Leo semper nunc eget varius et."
-      },
-      {
-        user: {
-          name: "Username",
-          image: require("./assets/userImage.png")
-        },
-        comment: "Dueotep Leo semper nunc eget varius et."
-      }
-    ]);
+    setDevices(["iPhone 14", "iPhone 13", "iPhone X", "iPhone 12"]);
   }, []);
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <View style={styles.articleContainer}>
-          <View style={styles.imageContainer}>
-            <Image style={styles.articleImage} source={article.image} />
-          </View>
-          <View style={styles.heading}>
-            <Text style={styles.title}>{article.title}</Text>
-            <View style={styles.headingIcons}>
-              <Image
-                style={styles.icon}
-                source={require("./assets/copyIcon.png")}
-              />
-              <Image
-                style={styles.icon}
-                source={require("./assets/readIcon.png")}
-              />
-              <Image
-                style={styles.icon}
-                source={require("./assets/newIcon.png")}
-              />
-            </View>
-          </View>
-          <Text style={styles.articleDescription}>{article.description}</Text>
-          <View style={styles.authorContainer}>
-            <Image style={styles.authorImage} source={article.authorImage} />
-            <View>
-              <Text style={styles.authorName}>{article.authorName}</Text>
-              <Text style={styles.articleDetails}>
-                {article.date} - {article.readTime}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.commentsContainer}>
-          <View style={styles.commentsHeader}>
-            <Text style={styles.commentsHeaderText}>Comments</Text>
-            <View style={styles.headingIcons}>
-              <Text>{article.commentsCount}</Text>
-              <Image
-                style={styles.icon}
-                source={require("./assets/commentIcon.png")}
-                resizeMode="contain"
-              />
-            </View>
-          </View>
-          {comments.map((item, index) => (
-            <Comment key={index} comment={item} />
-          ))}
-          <View style={styles.commentsFooter}>
-            <Text style={styles.footerText}>See more</Text>
-            <Image
-              source={require("./assets/dropdownIcon.png")}
-              style={styles.dropdownIcon}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Input
+              text="Search"
+              placeholder="Search"
+              value={search}
+              onChange={setSearch}
+              icon={require("./assets/searchIcon.png")}
+              backgroundColor="#f6f6f6"
             />
+            <Text style={styles.heading}>Categories</Text>
+            <TabView
+              tabTitles={["All", "Mobile", "Laptops"]}
+              selected={selectedTab}
+              onPress={setSelectedTab}
+            />
+            <View style={styles.flexRow}>
+              <Text style={styles.heading}>Popolar products</Text>
+              <Pressable>
+                <Text style={styles.subText}>See all</Text>
+              </Pressable>
+            </View>
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              data={devices}
+              renderItem={({ item }) => (
+                <Pressable
+                  style={[
+                    styles.deviceContainer,
+                    item === selectedDevice && styles.selectedDevice
+                  ]}
+                  onPress={() => setSelectedDevice(item)}>
+                  <Image
+                    source={require("./assets/phoneIcon.png")}
+                    style={styles.deviceIcon}
+                  />
+                  <Text style={styles.deviceName}>{item}</Text>
+                </Pressable>
+              )}
+              keyExtractor={item => item}
+              horizontal={true}
+            />
+            <View style={styles.flexRow}>
+              <Button
+                buttonText="Save"
+                style={styles.modalButton}
+                hideShadow
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+              <Button
+                buttonText="Discard"
+                style={styles.modalButton}
+                backgroundColor="#fff"
+                borderColor="#000"
+                textColor="#000"
+                hideShadow={true}
+                onPress={() => setModalVisible(!modalVisible)}
+              />
+            </View>
           </View>
         </View>
-        <Input
-          text="Write comment"
-          placeholder="Write a comment"
-          value={comment}
-          onChangeText={setComment}
-          textArea={true}
-          containerStyle={styles.inputContainer}
-        >
-          <Pressable style={styles.button}>
-            <Text style={styles.btnText}>Submit</Text>
-          </Pressable>
-        </Input>
-      </ScrollView>
+      </Modal>
+      <Button
+        buttonText="Open Modal"
+        style={styles.button}
+        onPress={() => setModalVisible(true)}
+      />
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
   },
-  articleContainer: {
-    marginHorizontal: 25,
-    marginVertical: 10
-  },
-  imageContainer: {
-    elevation: 5,
-    width: 340,
-    height: 170,
-    shadowColor: "rgba(0,0,0,0.5)",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    alignSelf: "center"
-  },
-  articleImage: {
-    width: "100%",
+  background: {
+    resizeMode: "cover",
     height: "100%",
-    borderRadius: 10
+    width: "100%"
   },
   heading: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 10
-  },
-  title: {
-    fontSize: 16
-  },
-  headingIcons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
-  },
-  icon: {
-    width: 15,
-    height: 25,
-    marginHorizontal: 5,
-    resizeMode: "contain"
-  },
-  articleDescription: {
-    fontSize: 13,
-    textAlign: "justify"
-  },
-  authorContainer: {
-    flexDirection: "row",
-    marginVertical: 10,
-    alignItems: "center"
-  },
-  authorImage: {
-    width: 50,
-    height: 50,
-    marginRight: 15,
-    borderRadius: 30
-  },
-  articleDetails: {
-    fontSize: 12
-  },
-  authorName: {
-    fontSize: 18
-  },
-  commentsContainer: {
-    marginHorizontal: 20
-  },
-  commentsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10
-  },
-  commentsHeaderText: {
     fontSize: 14,
-    color: "#333333",
+    fontWeight: "bold",
+    marginLeft: 20,
     textTransform: "uppercase"
   },
-  commentsFooter: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center"
-  },
-  footerText: {
-    fontSize: 12,
-    color: "#333333"
-  },
-  dropdownIcon: {
-    marginTop: 4,
-    height: 15,
-    width: 15
-  },
-  inputContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-    marginHorizontal: 20
-  },
-  inputText: {
-    fontSize: 14,
-    marginLeft: 20,
-    color: "#111112"
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#e6e6e6",
-    borderRadius: 10,
-    padding: 10,
-    paddingLeft: 20,
-    marginVertical: 10,
-    width: "100%",
-    height: 100
-  },
   button: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    borderColor: "#EA4335",
-    borderWidth: 1,
-    height: 35,
-    width: 80,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 30,
-    alignSelf: "flex-end"
+    marginHorizontal: 40,
+    bottom: 50,
+    position: "absolute",
+    left: 0,
+    right: 0
   },
-  btnText: {
-    color: "#EA4335"
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    width: "100%",
+    marginTop: 22
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: "100%",
+    paddingHorizontal: 20,
+    paddingVertical: 30
+  },
+  flexRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 20
+  },
+  subText: {
+    color: "#9B9B9B",
+    fontSize: 12
+  },
+  deviceContainer: {
+    width: 150,
+    height: 150,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 10,
+    padding: 20,
+    justifyContent: "space-between",
+    marginRight: 20
+  },
+  deviceIcon: {
+    width: 40,
+    height: 70,
+    alignSelf: "center",
+    resizeMode: "contain"
+  },
+  deviceName: {
+    fontSize: 16,
+    color: "#000"
+  },
+  selectedDevice: {
+    backgroundColor: "#D2E6FF"
+  },
+  modalButton: {
+    flex: 1,
+    marginHorizontal: 20
   }
 });
 
-export default ArticleDetails;
-
-const Comment = ({ comment }) => {
+export default ARDevices;
+const Button = params => {
+  const backgroundColor = params.backgroundColor || "#000";
+  const textColor = params.textColor || "#fff";
+  const btnStyle = {
+    backgroundColor: backgroundColor,
+    borderColor: params.borderColor || backgroundColor,
+    borderWidth: 1
+  };
+  const btnText = {
+    color: textColor
+  };
   return (
-    <View style={commentStyles.commentContainer}>
-      <Image style={commentStyles.commentImage} source={comment.user.image} />
-      <View style={commentStyles.commentDescription}>
-        <View style={commentStyles.usernameContainer}>
-          <Text>{comment.user.name}</Text>
-          <View style={commentStyles.headingIcons}>
-            <Image
-              style={commentStyles.icon}
-              source={require("./assets/likeIcon.png")}
-              resizeMode="contain"
-            />
-            <Image
-              style={commentStyles.icon}
-              source={require("./assets/dislikeIcon.png")}
-              resizeMode="contain"
-            />
-            <Image
-              style={commentStyles.icon}
-              source={require("./assets/redFlagIcon.png")}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-        <Text style={commentStyles.commentText}>{comment.comment}</Text>
+    <View style={[buttonStyles.btnContainer, params.style]}>
+      <View style={!params.hideShadow ? buttonStyles.shadowContainer : null}>
+        <Pressable
+          style={[buttonStyles.btn, btnStyle]}
+          onPress={params.onPress}>
+          <Text style={[buttonStyles.btnText, btnText]}>
+            {params.buttonText}
+          </Text>
+          <View style={styles.childrenContainer}>{params.children}</View>
+        </Pressable>
       </View>
     </View>
   );
 };
 
-const commentStyles = StyleSheet.create({
-  commentContainer: {
-    flexDirection: "row",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e5e5",
-    alignItems: "center"
+const buttonStyles = StyleSheet.create({
+  btnContainer: {
+    justifyContent: "center"
   },
-  commentImage: {
-    width: 70,
-    height: 70,
-    marginRight: 15,
-    borderRadius: 60
+  shadowContainer: {
+    shadowColor: "rgba(0, 0, 0, 0.5)",
+    shadowOffset: {
+      width: 0,
+      height: 5
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10
   },
-  commentDescription: {
-    flex: 1,
-    justifyContent: "space-between",
-    height: 50
-  },
-  usernameContainer: {
-    flexDirection: "row",
+  btn: {
+    height: 50,
+    padding: 10,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between"
+
+    flexDirection: "row"
   },
-  commentText: {
-    color: "#231F20"
+  btnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold"
   },
-  headingIcons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  childrenContainer: {
+    justifyContent: "center",
     alignItems: "center"
-  },
-  icon: {
-    width: 20,
-    height: 20,
-    marginHorizontal: 5,
-    resizeMode: "contain"
   }
 });
-const Input = (props) => {
+
+const Input = props => {
   return (
     <View style={[inputStyles.inputContainer, props.containerStyle]}>
       {props.text
@@ -334,7 +262,7 @@ const Input = (props) => {
         ]}
         placeholder={props.placeholder ? props.placeholder : "Enter"}
         value={props.value}
-        onChangeText={(text) => props.onChange(text)}
+        onChangeText={() => props.onChange()}
         placeholderTextColor={
           props.placeholderTextColor ? props.placeholderTextColor : "#9B9B9B"
         }
@@ -342,6 +270,8 @@ const Input = (props) => {
         autoCapitalize="none"
         autoCorrect={false}
         multiline={!!props.textArea}
+        backgroundColor={props.backgroundColor}
+        secureTextEntry={props.secureTextEntry}
       />
       {props.errorText
         ? (
@@ -366,8 +296,7 @@ const Input = (props) => {
 const inputStyles = StyleSheet.create({
   inputContainer: {
     flexDirection: "column",
-    justifyContent: "center",
-    flex: 1
+    justifyContent: "center"
   },
   inputText: {
     fontSize: 14,
@@ -382,20 +311,124 @@ const inputStyles = StyleSheet.create({
     paddingLeft: 20,
     marginVertical: 10,
     width: "100%",
-    height: 50
+    height: 50,
+    color: "#000"
   },
   iconWithText: {
     position: "absolute",
     right: 30,
-    top: 50
+    top: 45,
+    width: 15,
+    height: 15,
+    resizeMode: "contain"
   },
   iconWithoutText: {
     position: "absolute",
     right: 30,
-    top: 28
+    top: 28,
+    width: 15,
+    height: 15,
+    resizeMode: "contain"
   },
   textArea: {
     height: 150
   },
   children: {}
+});
+
+const TabView = ({
+  tabTitles,
+  selected,
+  onPress,
+  tabColor,
+  backgroundColor,
+  style,
+  icons
+}) => {
+  const tabColorStyle = {
+    backgroundColor: tabColor || "#fff"
+  };
+  const backgroundColorStyle = {
+    backgroundColor: backgroundColor || "#F1F1F1"
+  };
+  const propStyle = style || {};
+  return (
+    <View
+      style={[tabViewStyles.paletteContainer, backgroundColorStyle, propStyle]}>
+      {tabTitles.map((title, index) => (
+        <Pressable
+          onPress={() => (onPress ? onPress(index) : null)}
+          style={
+            index === selected
+              ? [tabViewStyles.selected, tabColorStyle, tabViewStyles.tabItem]
+              : [
+                  tabViewStyles.unSelected,
+                  backgroundColorStyle,
+                  tabViewStyles.tabItem
+                ]
+          }
+          key={index}>
+          {icons
+            ? (
+            <Image
+              source={icons[index]}
+              style={[
+                tabViewStyles.icon,
+                index === selected
+                  ? tabViewStyles.selectedIcon
+                  : tabViewStyles.unSelectedIcon
+              ]}
+            />
+              )
+            : null}
+          <Text>{title}</Text>
+        </Pressable>
+      ))}
+    </View>
+  );
+};
+
+const tabViewStyles = StyleSheet.create({
+  paletteContainer: {
+    height: 48,
+    backgroundColor: "#E4E4E4",
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 6,
+    marginVertical: 10
+  },
+  tabItem: {
+    borderRadius: 10,
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row"
+  },
+  selected: {
+    shadowColor: "rgba(0, 0, 0, 0.5)",
+    elevation: 10,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5
+  },
+  unSelected: {
+    backgroundColor: "#f1f1f1"
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    marginRight: 5
+  },
+  selectedIcon: {
+    tintColor: "#000"
+  },
+  unSelectedIcon: {
+    tintColor: "#7C7C7C"
+  }
 });
